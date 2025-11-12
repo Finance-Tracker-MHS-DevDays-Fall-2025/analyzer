@@ -4,12 +4,12 @@ server:
     debug_port: 8080
 
 db:
-    host: "c-c9q1nf36ec2iglifhl3d.rw.mdb.yandexcloud.net"
-    port: 6432
-    user: "service"
-    password: "ApUg6KUIwA58BoBtJHXv"
+    host: "localhost"
+    port: 5432
+    user: "postgres"
+    password: ""
     dbname: "master"
-    sslmode: "require"
+    sslmode: "disable"
 
 log:
     level: "info"
