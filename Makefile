@@ -1,4 +1,4 @@
-.PHONY: proto deps build run clean test submodule-update
+.PHONY: proto deps build run clean test submodule-update docker-push
 
 submodule-update:
 	@echo "Updating git submodules..."
@@ -39,4 +39,15 @@ clean:
 
 test:
 	go test -v ./...
+
+docker-push:
+	@echo "Cleaning Docker system..."
+	docker system prune -a -f --volumes
+	@echo "Building Docker image..."
+	docker build  -f build/Dockerfile -t analyzer .
+	@echo "Tagging image..."
+	docker tag analyzer cr.yandex/crpkimlhn85fg9vjfj7l/analyzer:latest
+	@echo "Pushing to Yandex Container Registry..."
+	docker push cr.yandex/crpkimlhn85fg9vjfj7l/analyzer:latest
+	@echo "Done!"
 
