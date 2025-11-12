@@ -12,7 +12,7 @@ COPY internal ./internal
 COPY pkg/ ./pkg
 COPY config.yaml ./
 
-RUN go build -o ./bin/main ./cmd
+RUN GOOS=linux GOARCH=amd64 go build -o ./bin/main ./cmd
 
 FROM alpine:latest AS app
 

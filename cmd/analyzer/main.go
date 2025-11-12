@@ -27,6 +27,12 @@ func main() {
 
 	log := logger.New(cfg.Log.Level)
 	log.Info("application starting", "config", *configPath)
+	log.Info("database configuration",
+		"host", cfg.DB.Host,
+		"port", cfg.DB.Port,
+		"user", cfg.DB.User,
+		"dbname", cfg.DB.DBName,
+		"sslmode", cfg.DB.SSLMode)
 
 	ctx := context.Background()
 

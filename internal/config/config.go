@@ -54,21 +54,28 @@ func Load(configPath string) (*Config, error) {
 
 func overrideFromEnv(cfg *Config) {
 	if host := os.Getenv("DB_HOST"); host != "" {
+		fmt.Printf("[CONFIG] Overriding DB_HOST from env: %s (was: %s)\n", host, cfg.DB.Host)
 		cfg.DB.Host = host
 	}
 	if port := os.Getenv("DB_PORT"); port != "" {
+		oldPort := cfg.DB.Port
 		fmt.Sscanf(port, "%d", &cfg.DB.Port)
+		fmt.Printf("[CONFIG] Overriding DB_PORT from env: %d (was: %d)\n", cfg.DB.Port, oldPort)
 	}
 	if user := os.Getenv("DB_USER"); user != "" {
+		fmt.Printf("[CONFIG] Overriding DB_USER from env: %s (was: %s)\n", user, cfg.DB.User)
 		cfg.DB.User = user
 	}
 	if password := os.Getenv("DB_PASSWORD"); password != "" {
+		fmt.Printf("[CONFIG] Overriding DB_PASSWORD from env: ***\n")
 		cfg.DB.Password = password
 	}
 	if dbname := os.Getenv("DB_NAME"); dbname != "" {
+		fmt.Printf("[CONFIG] Overriding DB_NAME from env: %s (was: %s)\n", dbname, cfg.DB.DBName)
 		cfg.DB.DBName = dbname
 	}
 	if sslmode := os.Getenv("DB_SSLMODE"); sslmode != "" {
+		fmt.Printf("[CONFIG] Overriding DB_SSLMODE from env: %s (was: %s)\n", sslmode, cfg.DB.SSLMode)
 		cfg.DB.SSLMode = sslmode
 	}
 }

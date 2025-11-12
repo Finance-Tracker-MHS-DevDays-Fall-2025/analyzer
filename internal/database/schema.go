@@ -19,13 +19,17 @@ type ColumnInfo struct {
 func (db *Database) GetTablesSchema(ctx context.Context) ([]TableInfo, error) {
 	query := `
 		SELECT 
-			table_name,
-			column_name,
-			data_type,
-			is_nullable
-		FROM information_schema.columns
-		WHERE table_schema = 'public'
-		ORDER BY table_name, ordinal_position
+			c.table_name,
+			c.column_name,
+			c.data_type,
+			c.is_nullable
+		FROM information_schema.columns c
+		JOIN information_schema.tables t 
+			ON c.table_name = t.table_name 
+			AND c.table_schema = t.table_schema
+		WHERE c.table_schema = 'public'
+			AND t.table_type = 'BASE TABLE'
+		ORDER BY c.table_name, c.ordinal_position
 	`
 
 	rows, err := db.pool.Query(ctx, query)

@@ -38,6 +38,8 @@ func (h *DebugHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.handleSchema(w, r)
 	case "/debug/ping":
 		h.handlePing(w, r)
+	case "/debug/users":
+		h.handleUsers(w, r)
 	default:
 		h.handleIndex(w, r)
 	}
@@ -51,6 +53,7 @@ func (h *DebugHandler) handleIndex(w http.ResponseWriter, r *http.Request) {
 			"/debug/health",
 			"/debug/schema",
 			"/debug/ping",
+			"/debug/users",
 		},
 	}
 	json.NewEncoder(w).Encode(response)
@@ -115,5 +118,58 @@ func (h *DebugHandler) handlePing(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"ping":   "ok",
 		"result": result,
+	})
+}
+
+func (h *DebugHandler) handleUsers(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	query := `SELECT id, login, created_at FROM users ORDER BY created_at DESC LIMIT 100`
+
+	rows, err := h.db.Pool().Query(ctx, query)
+	if err != nil {
+		h.logger.Error("failed to query users", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": fmt.Sprintf("query failed: %v", err),
+		})
+		return
+	}
+	defer rows.Close()
+
+	type User struct {
+		ID        string `json:"id"`
+		Login     string `json:"login"`
+		CreatedAt string `json:"created_at"`
+	}
+
+	var users []User
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Login, &user.CreatedAt); err != nil {
+			h.logger.Error("failed to scan user row", "error", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"error": fmt.Sprintf("scan failed: %v", err),
+			})
+			return
+		}
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		h.logger.Error("error iterating user rows", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": fmt.Sprintf("iteration failed: %v", err),
+		})
+		return
+	}
+
+	h.logger.Info("users retrieved", "count", len(users))
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"users": users,
+		"count": len(users),
 	})
 }

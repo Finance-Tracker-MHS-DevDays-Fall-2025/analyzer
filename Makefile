@@ -26,7 +26,12 @@ build: submodule-update proto
 	go build -o bin/analyzer ./cmd/analyzer
 
 run: build
-	./bin/analyzer
+	@if [ -f .env ]; then \
+		echo "Loading .env file..."; \
+		export $$(cat .env | grep -v '^#' | xargs) && ./bin/analyzer; \
+	else \
+		./bin/analyzer; \
+	fi
 
 clean:
 	rm -rf bin/
