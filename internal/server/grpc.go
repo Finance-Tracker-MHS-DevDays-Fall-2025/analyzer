@@ -9,6 +9,7 @@ import (
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/handler"
 	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/analyzer"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type GRPCServer struct {
@@ -42,6 +43,9 @@ func (s *GRPCServer) Run() error {
 	)
 
 	pb.RegisterAnalyzerServiceServer(s.grpcServer, s.analyzerHandler)
+
+	reflection.Register(s.grpcServer)
+	s.logger.Info("gRPC reflection enabled")
 
 	s.logger.Info("gRPC server starting", "host", s.cfg.Host, "port", s.cfg.Port)
 
