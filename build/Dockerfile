@@ -18,6 +18,7 @@ FROM alpine:latest AS app
 WORKDIR /app
 
 EXPOSE 50051
+EXPOSE 8080
 
 COPY --from=build /app/bin/main ./
 COPY config.yaml ./
