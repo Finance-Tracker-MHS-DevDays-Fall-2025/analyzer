@@ -1,0 +1,3 @@
+[submodule "backend-common"]
+	path = backend-common
+	url = git@github.com:Finance-Tracker-MHS-DevDays-Fall-2025/backend-common.git

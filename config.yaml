@@ -1,0 +1,16 @@
+server:
+    host: "0.0.0.0"
+    port: 50051
+    debug_port: 8080
+
+db:
+    host: "c-c9q1nf36ec2iglifhl3d.rw.mdb.yandexcloud.net"
+    port: 6432
+    user: "service"
+    password: "ApUg6KUIwA58BoBtJHXv"
+    dbname: "master"
+    sslmode: "require"
+
+log:
+    level: "info"
+
