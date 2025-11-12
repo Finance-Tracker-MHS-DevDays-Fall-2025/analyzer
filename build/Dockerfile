@@ -18,6 +18,8 @@ FROM alpine:latest AS app
 
 WORKDIR /app
 
+EXPOSE 50051
+
 COPY --from=build /app/bin/main ./
 
 CMD ["./main"]
