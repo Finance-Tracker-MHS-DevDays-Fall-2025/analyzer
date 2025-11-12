@@ -254,3 +254,51 @@ func calculatePeriodEnd(start time.Time, period models.TimePeriod) time.Time {
 		return start.AddDate(0, 1, 0).Add(-time.Nanosecond)
 	}
 }
+
+func (s *PostgresStorage) GetCategoryStatsByPeriods(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.CategoryPeriodStats, error) {
+	truncFunc := getTruncFunction(groupBy)
+
+	query := `
+		WITH user_transactions AS (
+			SELECT 
+				t.mcc,
+				t.amount,
+				t.created_at
+			FROM transactions t
+			JOIN accounts a ON t.account_id = a.id
+			WHERE a.user_id = $1
+				AND t.created_at >= $2
+				AND t.type = 'EXPENSE'
+		)
+		SELECT 
+			DATE_TRUNC($3, created_at) as period_start,
+			COALESCE(mcc::TEXT, 'uncategorized') as category_id,
+			SUM(amount) as total_amount
+		FROM user_transactions
+		GROUP BY DATE_TRUNC($3, created_at), mcc
+		ORDER BY period_start DESC
+		LIMIT $4 * 50
+	`
+
+	rows, err := s.pool.Query(ctx, query, userID, startDate, truncFunc, periods)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query category stats: %w", err)
+	}
+	defer rows.Close()
+
+	var stats []models.CategoryPeriodStats
+
+	for rows.Next() {
+		var stat models.CategoryPeriodStats
+		if err := rows.Scan(&stat.PeriodStart, &stat.CategoryID, &stat.Amount); err != nil {
+			return nil, fmt.Errorf("failed to scan category stat: %w", err)
+		}
+		stats = append(stats, stat)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating category stats: %w", err)
+	}
+
+	return stats, nil
+}

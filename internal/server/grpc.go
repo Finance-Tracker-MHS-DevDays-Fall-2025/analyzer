@@ -7,7 +7,7 @@ import (
 
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/config"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/handler"
-	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/analyzer"
+	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/analyzer"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

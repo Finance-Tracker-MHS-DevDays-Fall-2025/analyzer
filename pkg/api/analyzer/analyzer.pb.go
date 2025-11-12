@@ -7,7 +7,7 @@
 package api_analyzer
 
 import (
-	common "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/common"
+	common "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -475,6 +475,170 @@ func (x *GetForecastResponse) GetForecasts() []*Forecast {
 	return nil
 }
 
+type GetAnomaliesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Period        common.TimePeriod      `protobuf:"varint,2,opt,name=period,proto3,enum=common.TimePeriod" json:"period,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAnomaliesRequest) Reset() {
+	*x = GetAnomaliesRequest{}
+	mi := &file_analyzer_analyzer_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAnomaliesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAnomaliesRequest) ProtoMessage() {}
+
+func (x *GetAnomaliesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_analyzer_analyzer_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAnomaliesRequest.ProtoReflect.Descriptor instead.
+func (*GetAnomaliesRequest) Descriptor() ([]byte, []int) {
+	return file_analyzer_analyzer_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetAnomaliesRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetAnomaliesRequest) GetPeriod() common.TimePeriod {
+	if x != nil {
+		return x.Period
+	}
+	return common.TimePeriod(0)
+}
+
+type GetAnomaliesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Anomalies     []*CategoryAnomaly     `protobuf:"bytes,1,rep,name=anomalies,proto3" json:"anomalies,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAnomaliesResponse) Reset() {
+	*x = GetAnomaliesResponse{}
+	mi := &file_analyzer_analyzer_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAnomaliesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAnomaliesResponse) ProtoMessage() {}
+
+func (x *GetAnomaliesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_analyzer_analyzer_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAnomaliesResponse.ProtoReflect.Descriptor instead.
+func (*GetAnomaliesResponse) Descriptor() ([]byte, []int) {
+	return file_analyzer_analyzer_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetAnomaliesResponse) GetAnomalies() []*CategoryAnomaly {
+	if x != nil {
+		return x.Anomalies
+	}
+	return nil
+}
+
+type CategoryAnomaly struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Mcc             string                 `protobuf:"bytes,1,opt,name=mcc,proto3" json:"mcc,omitempty"`
+	ActualAmount    *common.Money          `protobuf:"bytes,2,opt,name=actual_amount,json=actualAmount,proto3" json:"actual_amount,omitempty"`
+	ExpectedAmount  *common.Money          `protobuf:"bytes,3,opt,name=expected_amount,json=expectedAmount,proto3" json:"expected_amount,omitempty"`
+	DeviationAmount *common.Money          `protobuf:"bytes,4,opt,name=deviation_amount,json=deviationAmount,proto3" json:"deviation_amount,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *CategoryAnomaly) Reset() {
+	*x = CategoryAnomaly{}
+	mi := &file_analyzer_analyzer_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CategoryAnomaly) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CategoryAnomaly) ProtoMessage() {}
+
+func (x *CategoryAnomaly) ProtoReflect() protoreflect.Message {
+	mi := &file_analyzer_analyzer_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CategoryAnomaly.ProtoReflect.Descriptor instead.
+func (*CategoryAnomaly) Descriptor() ([]byte, []int) {
+	return file_analyzer_analyzer_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CategoryAnomaly) GetMcc() string {
+	if x != nil {
+		return x.Mcc
+	}
+	return ""
+}
+
+func (x *CategoryAnomaly) GetActualAmount() *common.Money {
+	if x != nil {
+		return x.ActualAmount
+	}
+	return nil
+}
+
+func (x *CategoryAnomaly) GetExpectedAmount() *common.Money {
+	if x != nil {
+		return x.ExpectedAmount
+	}
+	return nil
+}
+
+func (x *CategoryAnomaly) GetDeviationAmount() *common.Money {
+	if x != nil {
+		return x.DeviationAmount
+	}
+	return nil
+}
+
 var File_analyzer_analyzer_proto protoreflect.FileDescriptor
 
 const file_analyzer_analyzer_proto_rawDesc = "" +
@@ -516,10 +680,21 @@ const file_analyzer_analyzer_proto_rawDesc = "" +
 	"\x06period\x18\x02 \x01(\x0e2\x12.common.TimePeriodR\x06period\x12#\n" +
 	"\rperiods_ahead\x18\x03 \x01(\x05R\fperiodsAhead\"G\n" +
 	"\x13GetForecastResponse\x120\n" +
-	"\tforecasts\x18\x01 \x03(\v2\x12.analyzer.ForecastR\tforecasts2\xaf\x01\n" +
+	"\tforecasts\x18\x01 \x03(\v2\x12.analyzer.ForecastR\tforecasts\"Z\n" +
+	"\x13GetAnomaliesRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12*\n" +
+	"\x06period\x18\x02 \x01(\x0e2\x12.common.TimePeriodR\x06period\"O\n" +
+	"\x14GetAnomaliesResponse\x127\n" +
+	"\tanomalies\x18\x01 \x03(\v2\x19.analyzer.CategoryAnomalyR\tanomalies\"\xc9\x01\n" +
+	"\x0fCategoryAnomaly\x12\x10\n" +
+	"\x03mcc\x18\x01 \x01(\tR\x03mcc\x122\n" +
+	"\ractual_amount\x18\x02 \x01(\v2\r.common.MoneyR\factualAmount\x126\n" +
+	"\x0fexpected_amount\x18\x03 \x01(\v2\r.common.MoneyR\x0eexpectedAmount\x128\n" +
+	"\x10deviation_amount\x18\x04 \x01(\v2\r.common.MoneyR\x0fdeviationAmount2\xfe\x01\n" +
 	"\x0fAnalyzerService\x12P\n" +
 	"\rGetStatistics\x12\x1e.analyzer.GetStatisticsRequest\x1a\x1f.analyzer.GetStatisticsResponse\x12J\n" +
-	"\vGetForecast\x12\x1c.analyzer.GetForecastRequest\x1a\x1d.analyzer.GetForecastResponseB\x0eZ\fapi-analyzerb\x06proto3"
+	"\vGetForecast\x12\x1c.analyzer.GetForecastRequest\x1a\x1d.analyzer.GetForecastResponse\x12M\n" +
+	"\fGetAnomalies\x12\x1d.analyzer.GetAnomaliesRequest\x1a\x1e.analyzer.GetAnomaliesResponseB\x0eZ\fapi-analyzerb\x06proto3"
 
 var (
 	file_analyzer_analyzer_proto_rawDescOnce sync.Once
@@ -533,7 +708,7 @@ func file_analyzer_analyzer_proto_rawDescGZIP() []byte {
 	return file_analyzer_analyzer_proto_rawDescData
 }
 
-var file_analyzer_analyzer_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_analyzer_analyzer_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_analyzer_analyzer_proto_goTypes = []any{
 	(*PeriodBalance)(nil),         // 0: analyzer.PeriodBalance
 	(*CategorySpending)(nil),      // 1: analyzer.CategorySpending
@@ -542,41 +717,51 @@ var file_analyzer_analyzer_proto_goTypes = []any{
 	(*GetStatisticsResponse)(nil), // 4: analyzer.GetStatisticsResponse
 	(*GetForecastRequest)(nil),    // 5: analyzer.GetForecastRequest
 	(*GetForecastResponse)(nil),   // 6: analyzer.GetForecastResponse
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
-	(*common.Money)(nil),          // 8: common.Money
-	(common.TimePeriod)(0),        // 9: common.TimePeriod
+	(*GetAnomaliesRequest)(nil),   // 7: analyzer.GetAnomaliesRequest
+	(*GetAnomaliesResponse)(nil),  // 8: analyzer.GetAnomaliesResponse
+	(*CategoryAnomaly)(nil),       // 9: analyzer.CategoryAnomaly
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*common.Money)(nil),          // 11: common.Money
+	(common.TimePeriod)(0),        // 12: common.TimePeriod
 }
 var file_analyzer_analyzer_proto_depIdxs = []int32{
-	7,  // 0: analyzer.PeriodBalance.period_start:type_name -> google.protobuf.Timestamp
-	7,  // 1: analyzer.PeriodBalance.period_end:type_name -> google.protobuf.Timestamp
-	8,  // 2: analyzer.PeriodBalance.income:type_name -> common.Money
-	8,  // 3: analyzer.PeriodBalance.expense:type_name -> common.Money
-	8,  // 4: analyzer.PeriodBalance.balance:type_name -> common.Money
+	10, // 0: analyzer.PeriodBalance.period_start:type_name -> google.protobuf.Timestamp
+	10, // 1: analyzer.PeriodBalance.period_end:type_name -> google.protobuf.Timestamp
+	11, // 2: analyzer.PeriodBalance.income:type_name -> common.Money
+	11, // 3: analyzer.PeriodBalance.expense:type_name -> common.Money
+	11, // 4: analyzer.PeriodBalance.balance:type_name -> common.Money
 	1,  // 5: analyzer.PeriodBalance.category_breakdown:type_name -> analyzer.CategorySpending
-	8,  // 6: analyzer.CategorySpending.total_amount:type_name -> common.Money
-	7,  // 7: analyzer.Forecast.period_start:type_name -> google.protobuf.Timestamp
-	7,  // 8: analyzer.Forecast.period_end:type_name -> google.protobuf.Timestamp
-	8,  // 9: analyzer.Forecast.expected_income:type_name -> common.Money
-	8,  // 10: analyzer.Forecast.expected_expense:type_name -> common.Money
-	8,  // 11: analyzer.Forecast.expected_balance:type_name -> common.Money
+	11, // 6: analyzer.CategorySpending.total_amount:type_name -> common.Money
+	10, // 7: analyzer.Forecast.period_start:type_name -> google.protobuf.Timestamp
+	10, // 8: analyzer.Forecast.period_end:type_name -> google.protobuf.Timestamp
+	11, // 9: analyzer.Forecast.expected_income:type_name -> common.Money
+	11, // 10: analyzer.Forecast.expected_expense:type_name -> common.Money
+	11, // 11: analyzer.Forecast.expected_balance:type_name -> common.Money
 	1,  // 12: analyzer.Forecast.category_breakdown:type_name -> analyzer.CategorySpending
-	7,  // 13: analyzer.GetStatisticsRequest.start_date:type_name -> google.protobuf.Timestamp
-	7,  // 14: analyzer.GetStatisticsRequest.end_date:type_name -> google.protobuf.Timestamp
-	9,  // 15: analyzer.GetStatisticsRequest.group_by:type_name -> common.TimePeriod
-	8,  // 16: analyzer.GetStatisticsResponse.total_income:type_name -> common.Money
-	8,  // 17: analyzer.GetStatisticsResponse.total_expense:type_name -> common.Money
+	10, // 13: analyzer.GetStatisticsRequest.start_date:type_name -> google.protobuf.Timestamp
+	10, // 14: analyzer.GetStatisticsRequest.end_date:type_name -> google.protobuf.Timestamp
+	12, // 15: analyzer.GetStatisticsRequest.group_by:type_name -> common.TimePeriod
+	11, // 16: analyzer.GetStatisticsResponse.total_income:type_name -> common.Money
+	11, // 17: analyzer.GetStatisticsResponse.total_expense:type_name -> common.Money
 	0,  // 18: analyzer.GetStatisticsResponse.period_data:type_name -> analyzer.PeriodBalance
-	9,  // 19: analyzer.GetForecastRequest.period:type_name -> common.TimePeriod
+	12, // 19: analyzer.GetForecastRequest.period:type_name -> common.TimePeriod
 	2,  // 20: analyzer.GetForecastResponse.forecasts:type_name -> analyzer.Forecast
-	3,  // 21: analyzer.AnalyzerService.GetStatistics:input_type -> analyzer.GetStatisticsRequest
-	5,  // 22: analyzer.AnalyzerService.GetForecast:input_type -> analyzer.GetForecastRequest
-	4,  // 23: analyzer.AnalyzerService.GetStatistics:output_type -> analyzer.GetStatisticsResponse
-	6,  // 24: analyzer.AnalyzerService.GetForecast:output_type -> analyzer.GetForecastResponse
-	23, // [23:25] is the sub-list for method output_type
-	21, // [21:23] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	12, // 21: analyzer.GetAnomaliesRequest.period:type_name -> common.TimePeriod
+	9,  // 22: analyzer.GetAnomaliesResponse.anomalies:type_name -> analyzer.CategoryAnomaly
+	11, // 23: analyzer.CategoryAnomaly.actual_amount:type_name -> common.Money
+	11, // 24: analyzer.CategoryAnomaly.expected_amount:type_name -> common.Money
+	11, // 25: analyzer.CategoryAnomaly.deviation_amount:type_name -> common.Money
+	3,  // 26: analyzer.AnalyzerService.GetStatistics:input_type -> analyzer.GetStatisticsRequest
+	5,  // 27: analyzer.AnalyzerService.GetForecast:input_type -> analyzer.GetForecastRequest
+	7,  // 28: analyzer.AnalyzerService.GetAnomalies:input_type -> analyzer.GetAnomaliesRequest
+	4,  // 29: analyzer.AnalyzerService.GetStatistics:output_type -> analyzer.GetStatisticsResponse
+	6,  // 30: analyzer.AnalyzerService.GetForecast:output_type -> analyzer.GetForecastResponse
+	8,  // 31: analyzer.AnalyzerService.GetAnomalies:output_type -> analyzer.GetAnomaliesResponse
+	29, // [29:32] is the sub-list for method output_type
+	26, // [26:29] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_analyzer_analyzer_proto_init() }
@@ -590,7 +775,7 @@ func file_analyzer_analyzer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_analyzer_analyzer_proto_rawDesc), len(file_analyzer_analyzer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

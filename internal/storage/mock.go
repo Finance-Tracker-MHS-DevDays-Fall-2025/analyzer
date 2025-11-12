@@ -10,6 +10,7 @@ import (
 type MockStorage struct {
 	GetStatisticsFunc              func(ctx context.Context, req GetStatisticsRequest) ([]models.PeriodStats, error)
 	GetTransactionsForForecastFunc func(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.PeriodStats, error)
+	GetCategoryStatsByPeriodsFunc  func(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.CategoryPeriodStats, error)
 }
 
 func NewMockStorage() *MockStorage {
@@ -28,4 +29,11 @@ func (m *MockStorage) GetTransactionsForForecast(ctx context.Context, userID str
 		return m.GetTransactionsForForecastFunc(ctx, userID, startDate, periods, groupBy)
 	}
 	return []models.PeriodStats{}, nil
+}
+
+func (m *MockStorage) GetCategoryStatsByPeriods(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.CategoryPeriodStats, error) {
+	if m.GetCategoryStatsByPeriodsFunc != nil {
+		return m.GetCategoryStatsByPeriodsFunc(ctx, userID, startDate, periods, groupBy)
+	}
+	return []models.CategoryPeriodStats{}, nil
 }

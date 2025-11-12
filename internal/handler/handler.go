@@ -7,8 +7,8 @@ import (
 
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/models"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/service"
-	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/analyzer"
-	pbcommon "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/common"
+	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/analyzer"
+	pbcommon "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/common"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -134,6 +134,37 @@ func convertForecastsToPB(forecasts []models.PeriodStats) []*pb.Forecast {
 			ExpectedExpense:   &pbcommon.Money{Amount: f.Expense, Currency: "RUB"},
 			ExpectedBalance:   &pbcommon.Money{Amount: f.Balance, Currency: "RUB"},
 			CategoryBreakdown: convertCategoriesToPB(f.Categories),
+		})
+	}
+
+	return result
+}
+
+func (h *AnalyzerHandler) GetAnomalies(ctx context.Context, req *pb.GetAnomaliesRequest) (*pb.GetAnomaliesResponse, error) {
+	h.logger.Info("GetAnomalies called", "user_id", req.UserId)
+
+	period := parseTimePeriod(req.Period)
+
+	anomalies, err := h.service.GetAnomalies(ctx, req.UserId, period)
+	if err != nil {
+		h.logger.Error("failed to get anomalies", "error", err, "user_id", req.UserId)
+		return nil, err
+	}
+
+	return &pb.GetAnomaliesResponse{
+		Anomalies: convertAnomaliesToPB(anomalies),
+	}, nil
+}
+
+func convertAnomaliesToPB(anomalies []models.CategoryAnomaly) []*pb.CategoryAnomaly {
+	result := make([]*pb.CategoryAnomaly, 0, len(anomalies))
+
+	for _, a := range anomalies {
+		result = append(result, &pb.CategoryAnomaly{
+			Mcc:             a.MCC,
+			ActualAmount:    &pbcommon.Money{Amount: a.ActualAmount, Currency: "RUB"},
+			ExpectedAmount:  &pbcommon.Money{Amount: a.ExpectedAmount, Currency: "RUB"},
+			DeviationAmount: &pbcommon.Money{Amount: a.DeviationAmount, Currency: "RUB"},
 		})
 	}
 

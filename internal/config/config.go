@@ -21,6 +21,7 @@ type ServerConfig struct {
 
 type LogConfig struct {
 	Level string `yaml:"level"`
+	File  string `yaml:"file"`
 }
 
 type DBConfig struct {

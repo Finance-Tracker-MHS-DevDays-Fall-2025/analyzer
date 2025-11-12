@@ -9,11 +9,11 @@ proto:
 	@echo "Generating Go code from protobuf..."
 	@mkdir -p pkg/api
 	protoc --go_out=pkg/api --go_opt=paths=source_relative \
-		--go_opt=Mcommon/common.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/common \
-		--go_opt=Manalyzer/analyzer.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/analyzer \
+		--go_opt=Mcommon/common.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/common \
+		--go_opt=Manalyzer/analyzer.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/analyzer \
 		--go-grpc_out=pkg/api --go-grpc_opt=paths=source_relative \
-		--go-grpc_opt=Mcommon/common.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/common \
-		--go-grpc_opt=Manalyzer/analyzer.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/analyzer \
+		--go-grpc_opt=Mcommon/common.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/common \
+		--go-grpc_opt=Manalyzer/analyzer.proto=github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/analyzer \
 		-I backend-common/proto \
 		backend-common/proto/analyzer/analyzer.proto \
 		backend-common/proto/common/common.proto

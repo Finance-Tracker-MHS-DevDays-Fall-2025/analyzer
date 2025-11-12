@@ -25,7 +25,7 @@ func main() {
 		panic("failed to load config: " + err.Error())
 	}
 
-	log := logger.New(cfg.Log.Level)
+	log := logger.New(cfg.Log.Level, cfg.Log.File)
 	log.Info("application starting", "config", *configPath)
 	log.Info("database configuration",
 		"host", cfg.DB.Host,
