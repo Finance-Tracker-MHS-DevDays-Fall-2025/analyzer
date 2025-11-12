@@ -4,26 +4,21 @@
 
 ## Быстрый старт
 
-### 1. Добавить submodule с proto файлами
 
-```bash
-git submodule add <URL_РЕПОЗИТОРИЯ_С_PROTO> api
-git submodule update --init --recursive
-```
 
-### 2. Установить зависимости
+### 1. Установить зависимости
 
 ```bash
 go mod download
 ```
 
-### 3. Сгенерировать код из protobuf
+### 2. Сгенерировать код из protobuf
 
 ```bash
 make proto
 ```
 
-### 4. Запустить сервис
+### 3. Запустить сервис
 
 ```bash
 make run
