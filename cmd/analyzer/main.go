@@ -43,9 +43,9 @@ func main() {
 	}
 	log.Info("database connected successfully")
 
-	transactionStorage := storage.NewPostgresStorage(db.Pool())
+	transactionStorage := storage.NewPostgresStorage(db.Pool(), &cfg.Analytics.Recurring)
 
-	analyzerService := service.NewAnalyzerService(transactionStorage, log)
+	analyzerService := service.NewAnalyzerService(transactionStorage, log, &cfg.Analytics)
 
 	analyzerHandler := handler.NewAnalyzerHandler(analyzerService, log)
 

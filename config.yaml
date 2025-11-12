@@ -15,3 +15,19 @@ log:
     level: "debug"
     file: "analyzer.log"
 
+analytics:
+    forecast:
+        lookback_periods: 6
+        max_periods_ahead: 12
+    anomaly:
+        lookback_periods: 6
+        deviation_threshold: 50.0
+        new_category_threshold: 50000
+    recurring:
+        lookback_months: 6
+        min_occurrences: 3
+        interval_min_days: 25
+        interval_max_days: 35
+        date_deviation_days: 3
+        prediction_days: 30
+

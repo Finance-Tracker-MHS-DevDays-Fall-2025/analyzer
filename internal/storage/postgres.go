@@ -5,17 +5,20 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/config"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PostgresStorage struct {
 	pool *pgxpool.Pool
+	cfg  *config.RecurringConfig
 }
 
-func NewPostgresStorage(pool *pgxpool.Pool) *PostgresStorage {
+func NewPostgresStorage(pool *pgxpool.Pool, cfg *config.RecurringConfig) *PostgresStorage {
 	return &PostgresStorage{
 		pool: pool,
+		cfg:  cfg,
 	}
 }
 
@@ -301,4 +304,63 @@ func (s *PostgresStorage) GetCategoryStatsByPeriods(ctx context.Context, userID 
 	}
 
 	return stats, nil
+}
+
+func (s *PostgresStorage) GetRecurringPatterns(ctx context.Context, userID string) ([]models.RecurringPattern, error) {
+	lookbackMonths := s.cfg.LookbackMonths
+	minOccurrences := s.cfg.MinOccurrences
+	intervalMinDays := s.cfg.IntervalMinDays
+	intervalMaxDays := s.cfg.IntervalMaxDays
+
+	query := fmt.Sprintf(`
+		WITH user_expenses AS (
+			SELECT 
+				t.mcc,
+				t.amount,
+				t.created_at,
+				LAG(t.created_at) OVER (
+					PARTITION BY t.mcc
+					ORDER BY t.created_at
+				) as prev_date
+			FROM transactions t
+			JOIN accounts a ON t.account_id = a.id
+			WHERE a.user_id = $1
+				AND t.created_at >= NOW() - INTERVAL '%d months'
+				AND t.type = 'EXPENSE'
+				AND t.mcc IS NOT NULL
+		)
+		SELECT 
+			mcc,
+			PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY amount)::BIGINT as median_amount,
+			AVG(EXTRACT(EPOCH FROM (created_at - prev_date))/86400) as avg_interval_days,
+			MAX(created_at) as last_occurrence
+		FROM user_expenses
+		WHERE prev_date IS NOT NULL
+		GROUP BY mcc
+		HAVING COUNT(*) >= %d
+			AND AVG(EXTRACT(EPOCH FROM (created_at - prev_date))/86400) BETWEEN %d AND %d
+		ORDER BY last_occurrence DESC
+	`, lookbackMonths, minOccurrences, intervalMinDays, intervalMaxDays)
+
+	rows, err := s.pool.Query(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query recurring patterns: %w", err)
+	}
+	defer rows.Close()
+
+	var patterns []models.RecurringPattern
+
+	for rows.Next() {
+		var pattern models.RecurringPattern
+		if err := rows.Scan(&pattern.MCC, &pattern.MedianAmount, &pattern.AvgIntervalDays, &pattern.LastOccurrence); err != nil {
+			return nil, fmt.Errorf("failed to scan recurring pattern: %w", err)
+		}
+		patterns = append(patterns, pattern)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating recurring patterns: %w", err)
+	}
+
+	return patterns, nil
 }

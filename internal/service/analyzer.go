@@ -7,6 +7,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/config"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/models"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/storage"
 )
@@ -14,12 +15,14 @@ import (
 type AnalyzerService struct {
 	storage storage.TransactionStorage
 	logger  *slog.Logger
+	cfg     *config.AnalyticsConfig
 }
 
-func NewAnalyzerService(storage storage.TransactionStorage, logger *slog.Logger) *AnalyzerService {
+func NewAnalyzerService(storage storage.TransactionStorage, logger *slog.Logger, cfg *config.AnalyticsConfig) *AnalyzerService {
 	return &AnalyzerService{
 		storage: storage,
 		logger:  logger.With("component", "analyzer_service"),
+		cfg:     cfg,
 	}
 }
 
@@ -80,15 +83,16 @@ func (s *AnalyzerService) GetForecast(ctx context.Context, userID string, period
 		periodsAhead = 1
 	}
 
-	if periodsAhead > 12 {
-		return nil, fmt.Errorf("periods_ahead cannot exceed 12")
+	maxPeriodsAhead := s.cfg.Forecast.MaxPeriodsAhead
+	if periodsAhead > maxPeriodsAhead {
+		return nil, fmt.Errorf("periods_ahead cannot exceed %d", maxPeriodsAhead)
 	}
 
 	if period == "" {
 		period = models.TimePeriodMonth
 	}
 
-	lookbackPeriods := 6
+	lookbackPeriods := s.cfg.Forecast.LookbackPeriods
 	now := time.Now()
 	currentPeriodStart := truncateToPeriodStart(now, period)
 	startDate := calculateStartDate(currentPeriodStart, period, lookbackPeriods)
@@ -219,7 +223,7 @@ func (s *AnalyzerService) GetAnomalies(ctx context.Context, userID string, perio
 		period = models.TimePeriodMonth
 	}
 
-	lookbackPeriods := 6
+	lookbackPeriods := s.cfg.Anomaly.LookbackPeriods
 	now := time.Now()
 	startDate := calculateStartDate(now, period, lookbackPeriods)
 
@@ -305,7 +309,8 @@ func (s *AnalyzerService) GetAnomalies(ctx context.Context, userID string, perio
 			"expected", expected,
 		)
 
-		if expected == 0 && actual > 50000 {
+		newCategoryThreshold := s.cfg.Anomaly.NewCategoryThreshold
+		if expected == 0 && actual > newCategoryThreshold {
 			s.logger.Info("new category anomaly detected",
 				"mcc", categoryID,
 				"actual", actual,
@@ -326,7 +331,8 @@ func (s *AnalyzerService) GetAnomalies(ctx context.Context, userID string, perio
 		deviation := actual - expected
 		deviationPercent := (float64(deviation) / float64(expected)) * 100
 
-		if deviationPercent > 50.0 {
+		deviationThreshold := s.cfg.Anomaly.DeviationThreshold
+		if deviationPercent > deviationThreshold {
 			s.logger.Info("anomaly detected",
 				"mcc", categoryID,
 				"actual", actual,
@@ -394,4 +400,60 @@ func (s *AnalyzerService) calculateWMAByCategory(periodData map[time.Time]map[st
 	}
 
 	return expected
+}
+
+func (s *AnalyzerService) GetUpcomingRecurring(ctx context.Context, userID string) ([]models.RecurringPayment, error) {
+	if userID == "" {
+		return nil, fmt.Errorf("user_id is required")
+	}
+
+	s.logger.Info("GetUpcomingRecurring started", "user_id", userID)
+
+	patterns, err := s.storage.GetRecurringPatterns(ctx, userID)
+	if err != nil {
+		s.logger.Error("failed to get recurring patterns", "error", err, "user_id", userID)
+		return nil, fmt.Errorf("failed to get recurring patterns: %w", err)
+	}
+
+	s.logger.Info("recurring patterns retrieved", "patterns_count", len(patterns))
+
+	now := time.Now()
+	predictionWindow := now.AddDate(0, 0, s.cfg.Recurring.PredictionDays)
+
+	var payments []models.RecurringPayment
+
+	for _, pattern := range patterns {
+		expectedDate := pattern.LastOccurrence.AddDate(0, 0, int(pattern.AvgIntervalDays))
+
+		s.logger.Debug("checking pattern",
+			"mcc", pattern.MCC,
+			"last_occurrence", pattern.LastOccurrence,
+			"expected_date", expectedDate,
+			"avg_interval_days", pattern.AvgIntervalDays,
+		)
+
+		if expectedDate.After(now) && expectedDate.Before(predictionWindow) {
+			s.logger.Info("upcoming payment detected",
+				"mcc", pattern.MCC,
+				"expected_date", expectedDate,
+				"typical_amount", pattern.MedianAmount,
+			)
+			payments = append(payments, models.RecurringPayment{
+				MCC:           pattern.MCC,
+				TypicalAmount: pattern.MedianAmount,
+				ExpectedDate:  expectedDate,
+			})
+		}
+	}
+
+	sort.Slice(payments, func(i, j int) bool {
+		return payments[i].ExpectedDate.Before(payments[j].ExpectedDate)
+	})
+
+	s.logger.Info("upcoming recurring payments calculated",
+		"user_id", userID,
+		"payments_count", len(payments),
+	)
+
+	return payments, nil
 }

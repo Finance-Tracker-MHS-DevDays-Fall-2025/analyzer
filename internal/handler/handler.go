@@ -170,3 +170,31 @@ func convertAnomaliesToPB(anomalies []models.CategoryAnomaly) []*pb.CategoryAnom
 
 	return result
 }
+
+func (h *AnalyzerHandler) GetUpcomingRecurring(ctx context.Context, req *pb.GetUpcomingRecurringRequest) (*pb.GetUpcomingRecurringResponse, error) {
+	h.logger.Info("GetUpcomingRecurring called", "user_id", req.UserId)
+
+	payments, err := h.service.GetUpcomingRecurring(ctx, req.UserId)
+	if err != nil {
+		h.logger.Error("failed to get upcoming recurring", "error", err, "user_id", req.UserId)
+		return nil, err
+	}
+
+	return &pb.GetUpcomingRecurringResponse{
+		Payments: convertRecurringPaymentsToPB(payments),
+	}, nil
+}
+
+func convertRecurringPaymentsToPB(payments []models.RecurringPayment) []*pb.RecurringPayment {
+	result := make([]*pb.RecurringPayment, 0, len(payments))
+
+	for _, p := range payments {
+		result = append(result, &pb.RecurringPayment{
+			Mcc:           p.MCC,
+			TypicalAmount: &pbcommon.Money{Amount: p.TypicalAmount, Currency: "RUB"},
+			ExpectedDate:  timestamppb.New(p.ExpectedDate),
+		})
+	}
+
+	return result
+}

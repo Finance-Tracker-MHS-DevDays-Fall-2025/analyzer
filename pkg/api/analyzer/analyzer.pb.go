@@ -639,6 +639,154 @@ func (x *CategoryAnomaly) GetDeviationAmount() *common.Money {
 	return nil
 }
 
+type GetUpcomingRecurringRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUpcomingRecurringRequest) Reset() {
+	*x = GetUpcomingRecurringRequest{}
+	mi := &file_analyzer_analyzer_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUpcomingRecurringRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUpcomingRecurringRequest) ProtoMessage() {}
+
+func (x *GetUpcomingRecurringRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_analyzer_analyzer_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUpcomingRecurringRequest.ProtoReflect.Descriptor instead.
+func (*GetUpcomingRecurringRequest) Descriptor() ([]byte, []int) {
+	return file_analyzer_analyzer_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetUpcomingRecurringRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetUpcomingRecurringResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Payments      []*RecurringPayment    `protobuf:"bytes,1,rep,name=payments,proto3" json:"payments,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUpcomingRecurringResponse) Reset() {
+	*x = GetUpcomingRecurringResponse{}
+	mi := &file_analyzer_analyzer_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUpcomingRecurringResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUpcomingRecurringResponse) ProtoMessage() {}
+
+func (x *GetUpcomingRecurringResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_analyzer_analyzer_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUpcomingRecurringResponse.ProtoReflect.Descriptor instead.
+func (*GetUpcomingRecurringResponse) Descriptor() ([]byte, []int) {
+	return file_analyzer_analyzer_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetUpcomingRecurringResponse) GetPayments() []*RecurringPayment {
+	if x != nil {
+		return x.Payments
+	}
+	return nil
+}
+
+type RecurringPayment struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Mcc           string                 `protobuf:"bytes,1,opt,name=mcc,proto3" json:"mcc,omitempty"`
+	TypicalAmount *common.Money          `protobuf:"bytes,2,opt,name=typical_amount,json=typicalAmount,proto3" json:"typical_amount,omitempty"`
+	ExpectedDate  *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=expected_date,json=expectedDate,proto3" json:"expected_date,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RecurringPayment) Reset() {
+	*x = RecurringPayment{}
+	mi := &file_analyzer_analyzer_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RecurringPayment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecurringPayment) ProtoMessage() {}
+
+func (x *RecurringPayment) ProtoReflect() protoreflect.Message {
+	mi := &file_analyzer_analyzer_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecurringPayment.ProtoReflect.Descriptor instead.
+func (*RecurringPayment) Descriptor() ([]byte, []int) {
+	return file_analyzer_analyzer_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *RecurringPayment) GetMcc() string {
+	if x != nil {
+		return x.Mcc
+	}
+	return ""
+}
+
+func (x *RecurringPayment) GetTypicalAmount() *common.Money {
+	if x != nil {
+		return x.TypicalAmount
+	}
+	return nil
+}
+
+func (x *RecurringPayment) GetExpectedDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ExpectedDate
+	}
+	return nil
+}
+
 var File_analyzer_analyzer_proto protoreflect.FileDescriptor
 
 const file_analyzer_analyzer_proto_rawDesc = "" +
@@ -690,11 +838,20 @@ const file_analyzer_analyzer_proto_rawDesc = "" +
 	"\x03mcc\x18\x01 \x01(\tR\x03mcc\x122\n" +
 	"\ractual_amount\x18\x02 \x01(\v2\r.common.MoneyR\factualAmount\x126\n" +
 	"\x0fexpected_amount\x18\x03 \x01(\v2\r.common.MoneyR\x0eexpectedAmount\x128\n" +
-	"\x10deviation_amount\x18\x04 \x01(\v2\r.common.MoneyR\x0fdeviationAmount2\xfe\x01\n" +
+	"\x10deviation_amount\x18\x04 \x01(\v2\r.common.MoneyR\x0fdeviationAmount\"6\n" +
+	"\x1bGetUpcomingRecurringRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"V\n" +
+	"\x1cGetUpcomingRecurringResponse\x126\n" +
+	"\bpayments\x18\x01 \x03(\v2\x1a.analyzer.RecurringPaymentR\bpayments\"\x9b\x01\n" +
+	"\x10RecurringPayment\x12\x10\n" +
+	"\x03mcc\x18\x01 \x01(\tR\x03mcc\x124\n" +
+	"\x0etypical_amount\x18\x02 \x01(\v2\r.common.MoneyR\rtypicalAmount\x12?\n" +
+	"\rexpected_date\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\fexpectedDate2\xe5\x02\n" +
 	"\x0fAnalyzerService\x12P\n" +
 	"\rGetStatistics\x12\x1e.analyzer.GetStatisticsRequest\x1a\x1f.analyzer.GetStatisticsResponse\x12J\n" +
 	"\vGetForecast\x12\x1c.analyzer.GetForecastRequest\x1a\x1d.analyzer.GetForecastResponse\x12M\n" +
-	"\fGetAnomalies\x12\x1d.analyzer.GetAnomaliesRequest\x1a\x1e.analyzer.GetAnomaliesResponseB\x0eZ\fapi-analyzerb\x06proto3"
+	"\fGetAnomalies\x12\x1d.analyzer.GetAnomaliesRequest\x1a\x1e.analyzer.GetAnomaliesResponse\x12e\n" +
+	"\x14GetUpcomingRecurring\x12%.analyzer.GetUpcomingRecurringRequest\x1a&.analyzer.GetUpcomingRecurringResponseB\x0eZ\fapi-analyzerb\x06proto3"
 
 var (
 	file_analyzer_analyzer_proto_rawDescOnce sync.Once
@@ -708,60 +865,68 @@ func file_analyzer_analyzer_proto_rawDescGZIP() []byte {
 	return file_analyzer_analyzer_proto_rawDescData
 }
 
-var file_analyzer_analyzer_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_analyzer_analyzer_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_analyzer_analyzer_proto_goTypes = []any{
-	(*PeriodBalance)(nil),         // 0: analyzer.PeriodBalance
-	(*CategorySpending)(nil),      // 1: analyzer.CategorySpending
-	(*Forecast)(nil),              // 2: analyzer.Forecast
-	(*GetStatisticsRequest)(nil),  // 3: analyzer.GetStatisticsRequest
-	(*GetStatisticsResponse)(nil), // 4: analyzer.GetStatisticsResponse
-	(*GetForecastRequest)(nil),    // 5: analyzer.GetForecastRequest
-	(*GetForecastResponse)(nil),   // 6: analyzer.GetForecastResponse
-	(*GetAnomaliesRequest)(nil),   // 7: analyzer.GetAnomaliesRequest
-	(*GetAnomaliesResponse)(nil),  // 8: analyzer.GetAnomaliesResponse
-	(*CategoryAnomaly)(nil),       // 9: analyzer.CategoryAnomaly
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
-	(*common.Money)(nil),          // 11: common.Money
-	(common.TimePeriod)(0),        // 12: common.TimePeriod
+	(*PeriodBalance)(nil),                // 0: analyzer.PeriodBalance
+	(*CategorySpending)(nil),             // 1: analyzer.CategorySpending
+	(*Forecast)(nil),                     // 2: analyzer.Forecast
+	(*GetStatisticsRequest)(nil),         // 3: analyzer.GetStatisticsRequest
+	(*GetStatisticsResponse)(nil),        // 4: analyzer.GetStatisticsResponse
+	(*GetForecastRequest)(nil),           // 5: analyzer.GetForecastRequest
+	(*GetForecastResponse)(nil),          // 6: analyzer.GetForecastResponse
+	(*GetAnomaliesRequest)(nil),          // 7: analyzer.GetAnomaliesRequest
+	(*GetAnomaliesResponse)(nil),         // 8: analyzer.GetAnomaliesResponse
+	(*CategoryAnomaly)(nil),              // 9: analyzer.CategoryAnomaly
+	(*GetUpcomingRecurringRequest)(nil),  // 10: analyzer.GetUpcomingRecurringRequest
+	(*GetUpcomingRecurringResponse)(nil), // 11: analyzer.GetUpcomingRecurringResponse
+	(*RecurringPayment)(nil),             // 12: analyzer.RecurringPayment
+	(*timestamppb.Timestamp)(nil),        // 13: google.protobuf.Timestamp
+	(*common.Money)(nil),                 // 14: common.Money
+	(common.TimePeriod)(0),               // 15: common.TimePeriod
 }
 var file_analyzer_analyzer_proto_depIdxs = []int32{
-	10, // 0: analyzer.PeriodBalance.period_start:type_name -> google.protobuf.Timestamp
-	10, // 1: analyzer.PeriodBalance.period_end:type_name -> google.protobuf.Timestamp
-	11, // 2: analyzer.PeriodBalance.income:type_name -> common.Money
-	11, // 3: analyzer.PeriodBalance.expense:type_name -> common.Money
-	11, // 4: analyzer.PeriodBalance.balance:type_name -> common.Money
+	13, // 0: analyzer.PeriodBalance.period_start:type_name -> google.protobuf.Timestamp
+	13, // 1: analyzer.PeriodBalance.period_end:type_name -> google.protobuf.Timestamp
+	14, // 2: analyzer.PeriodBalance.income:type_name -> common.Money
+	14, // 3: analyzer.PeriodBalance.expense:type_name -> common.Money
+	14, // 4: analyzer.PeriodBalance.balance:type_name -> common.Money
 	1,  // 5: analyzer.PeriodBalance.category_breakdown:type_name -> analyzer.CategorySpending
-	11, // 6: analyzer.CategorySpending.total_amount:type_name -> common.Money
-	10, // 7: analyzer.Forecast.period_start:type_name -> google.protobuf.Timestamp
-	10, // 8: analyzer.Forecast.period_end:type_name -> google.protobuf.Timestamp
-	11, // 9: analyzer.Forecast.expected_income:type_name -> common.Money
-	11, // 10: analyzer.Forecast.expected_expense:type_name -> common.Money
-	11, // 11: analyzer.Forecast.expected_balance:type_name -> common.Money
+	14, // 6: analyzer.CategorySpending.total_amount:type_name -> common.Money
+	13, // 7: analyzer.Forecast.period_start:type_name -> google.protobuf.Timestamp
+	13, // 8: analyzer.Forecast.period_end:type_name -> google.protobuf.Timestamp
+	14, // 9: analyzer.Forecast.expected_income:type_name -> common.Money
+	14, // 10: analyzer.Forecast.expected_expense:type_name -> common.Money
+	14, // 11: analyzer.Forecast.expected_balance:type_name -> common.Money
 	1,  // 12: analyzer.Forecast.category_breakdown:type_name -> analyzer.CategorySpending
-	10, // 13: analyzer.GetStatisticsRequest.start_date:type_name -> google.protobuf.Timestamp
-	10, // 14: analyzer.GetStatisticsRequest.end_date:type_name -> google.protobuf.Timestamp
-	12, // 15: analyzer.GetStatisticsRequest.group_by:type_name -> common.TimePeriod
-	11, // 16: analyzer.GetStatisticsResponse.total_income:type_name -> common.Money
-	11, // 17: analyzer.GetStatisticsResponse.total_expense:type_name -> common.Money
+	13, // 13: analyzer.GetStatisticsRequest.start_date:type_name -> google.protobuf.Timestamp
+	13, // 14: analyzer.GetStatisticsRequest.end_date:type_name -> google.protobuf.Timestamp
+	15, // 15: analyzer.GetStatisticsRequest.group_by:type_name -> common.TimePeriod
+	14, // 16: analyzer.GetStatisticsResponse.total_income:type_name -> common.Money
+	14, // 17: analyzer.GetStatisticsResponse.total_expense:type_name -> common.Money
 	0,  // 18: analyzer.GetStatisticsResponse.period_data:type_name -> analyzer.PeriodBalance
-	12, // 19: analyzer.GetForecastRequest.period:type_name -> common.TimePeriod
+	15, // 19: analyzer.GetForecastRequest.period:type_name -> common.TimePeriod
 	2,  // 20: analyzer.GetForecastResponse.forecasts:type_name -> analyzer.Forecast
-	12, // 21: analyzer.GetAnomaliesRequest.period:type_name -> common.TimePeriod
+	15, // 21: analyzer.GetAnomaliesRequest.period:type_name -> common.TimePeriod
 	9,  // 22: analyzer.GetAnomaliesResponse.anomalies:type_name -> analyzer.CategoryAnomaly
-	11, // 23: analyzer.CategoryAnomaly.actual_amount:type_name -> common.Money
-	11, // 24: analyzer.CategoryAnomaly.expected_amount:type_name -> common.Money
-	11, // 25: analyzer.CategoryAnomaly.deviation_amount:type_name -> common.Money
-	3,  // 26: analyzer.AnalyzerService.GetStatistics:input_type -> analyzer.GetStatisticsRequest
-	5,  // 27: analyzer.AnalyzerService.GetForecast:input_type -> analyzer.GetForecastRequest
-	7,  // 28: analyzer.AnalyzerService.GetAnomalies:input_type -> analyzer.GetAnomaliesRequest
-	4,  // 29: analyzer.AnalyzerService.GetStatistics:output_type -> analyzer.GetStatisticsResponse
-	6,  // 30: analyzer.AnalyzerService.GetForecast:output_type -> analyzer.GetForecastResponse
-	8,  // 31: analyzer.AnalyzerService.GetAnomalies:output_type -> analyzer.GetAnomaliesResponse
-	29, // [29:32] is the sub-list for method output_type
-	26, // [26:29] is the sub-list for method input_type
-	26, // [26:26] is the sub-list for extension type_name
-	26, // [26:26] is the sub-list for extension extendee
-	0,  // [0:26] is the sub-list for field type_name
+	14, // 23: analyzer.CategoryAnomaly.actual_amount:type_name -> common.Money
+	14, // 24: analyzer.CategoryAnomaly.expected_amount:type_name -> common.Money
+	14, // 25: analyzer.CategoryAnomaly.deviation_amount:type_name -> common.Money
+	12, // 26: analyzer.GetUpcomingRecurringResponse.payments:type_name -> analyzer.RecurringPayment
+	14, // 27: analyzer.RecurringPayment.typical_amount:type_name -> common.Money
+	13, // 28: analyzer.RecurringPayment.expected_date:type_name -> google.protobuf.Timestamp
+	3,  // 29: analyzer.AnalyzerService.GetStatistics:input_type -> analyzer.GetStatisticsRequest
+	5,  // 30: analyzer.AnalyzerService.GetForecast:input_type -> analyzer.GetForecastRequest
+	7,  // 31: analyzer.AnalyzerService.GetAnomalies:input_type -> analyzer.GetAnomaliesRequest
+	10, // 32: analyzer.AnalyzerService.GetUpcomingRecurring:input_type -> analyzer.GetUpcomingRecurringRequest
+	4,  // 33: analyzer.AnalyzerService.GetStatistics:output_type -> analyzer.GetStatisticsResponse
+	6,  // 34: analyzer.AnalyzerService.GetForecast:output_type -> analyzer.GetForecastResponse
+	8,  // 35: analyzer.AnalyzerService.GetAnomalies:output_type -> analyzer.GetAnomaliesResponse
+	11, // 36: analyzer.AnalyzerService.GetUpcomingRecurring:output_type -> analyzer.GetUpcomingRecurringResponse
+	33, // [33:37] is the sub-list for method output_type
+	29, // [29:33] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_analyzer_analyzer_proto_init() }
@@ -775,7 +940,7 @@ func file_analyzer_analyzer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_analyzer_analyzer_proto_rawDesc), len(file_analyzer_analyzer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

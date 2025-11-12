@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	Server ServerConfig `yaml:"server"`
-	DB     DBConfig     `yaml:"db"`
-	Log    LogConfig    `yaml:"log"`
+	Server    ServerConfig    `yaml:"server"`
+	DB        DBConfig        `yaml:"db"`
+	Log       LogConfig       `yaml:"log"`
+	Analytics AnalyticsConfig `yaml:"analytics"`
 }
 
 type ServerConfig struct {
@@ -31,6 +32,32 @@ type DBConfig struct {
 	Password string `yaml:"password"`
 	DBName   string `yaml:"dbname"`
 	SSLMode  string `yaml:"sslmode"`
+}
+
+type AnalyticsConfig struct {
+	Forecast  ForecastConfig  `yaml:"forecast"`
+	Anomaly   AnomalyConfig   `yaml:"anomaly"`
+	Recurring RecurringConfig `yaml:"recurring"`
+}
+
+type ForecastConfig struct {
+	LookbackPeriods int `yaml:"lookback_periods"`
+	MaxPeriodsAhead int `yaml:"max_periods_ahead"`
+}
+
+type AnomalyConfig struct {
+	LookbackPeriods      int     `yaml:"lookback_periods"`
+	DeviationThreshold   float64 `yaml:"deviation_threshold"`
+	NewCategoryThreshold int64   `yaml:"new_category_threshold"`
+}
+
+type RecurringConfig struct {
+	LookbackMonths    int `yaml:"lookback_months"`
+	MinOccurrences    int `yaml:"min_occurrences"`
+	IntervalMinDays   int `yaml:"interval_min_days"`
+	IntervalMaxDays   int `yaml:"interval_max_days"`
+	DateDeviationDays int `yaml:"date_deviation_days"`
+	PredictionDays    int `yaml:"prediction_days"`
 }
 
 func Load(configPath string) (*Config, error) {

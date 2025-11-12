@@ -7,16 +7,40 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/config"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/models"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/service"
 	"github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/internal/storage"
-	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/analyzer"
-	pbcommon "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/proto/common"
+	pb "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/analyzer"
+	pbcommon "github.com/Finance-Tracker-MHS-DevDays-Fall-2025/analyzer/pkg/api/common"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+func getDefaultTestConfig() *config.AnalyticsConfig {
+	return &config.AnalyticsConfig{
+		Forecast: config.ForecastConfig{
+			LookbackPeriods: 6,
+			MaxPeriodsAhead: 12,
+		},
+		Anomaly: config.AnomalyConfig{
+			LookbackPeriods:      6,
+			DeviationThreshold:   50.0,
+			NewCategoryThreshold: 50000,
+		},
+		Recurring: config.RecurringConfig{
+			LookbackMonths:    6,
+			MinOccurrences:    3,
+			IntervalMinDays:   25,
+			IntervalMaxDays:   35,
+			DateDeviationDays: 3,
+			PredictionDays:    30,
+		},
+	}
+}
+
 func TestGetStatistics_Handler_Success(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	cfg := getDefaultTestConfig()
 
 	mockStorage := storage.NewMockStorage()
 	mockStorage.GetStatisticsFunc = func(ctx context.Context, req storage.GetStatisticsRequest) ([]models.PeriodStats, error) {
@@ -35,7 +59,7 @@ func TestGetStatistics_Handler_Success(t *testing.T) {
 		}, nil
 	}
 
-	analyzerService := service.NewAnalyzerService(mockStorage, logger)
+	analyzerService := service.NewAnalyzerService(mockStorage, logger, cfg)
 	handler := NewAnalyzerHandler(analyzerService, logger)
 
 	req := &pb.GetStatisticsRequest{
@@ -92,6 +116,7 @@ func TestGetStatistics_Handler_Success(t *testing.T) {
 
 func TestGetStatistics_Handler_MultiplePeriods(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	cfg := getDefaultTestConfig()
 
 	mockStorage := storage.NewMockStorage()
 	mockStorage.GetStatisticsFunc = func(ctx context.Context, req storage.GetStatisticsRequest) ([]models.PeriodStats, error) {
@@ -123,7 +148,7 @@ func TestGetStatistics_Handler_MultiplePeriods(t *testing.T) {
 		}, nil
 	}
 
-	analyzerService := service.NewAnalyzerService(mockStorage, logger)
+	analyzerService := service.NewAnalyzerService(mockStorage, logger, cfg)
 	handler := NewAnalyzerHandler(analyzerService, logger)
 
 	req := &pb.GetStatisticsRequest{
@@ -154,6 +179,7 @@ func TestGetStatistics_Handler_MultiplePeriods(t *testing.T) {
 
 func TestGetStatistics_Handler_CurrencyIsRUB(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	cfg := getDefaultTestConfig()
 
 	mockStorage := storage.NewMockStorage()
 	mockStorage.GetStatisticsFunc = func(ctx context.Context, req storage.GetStatisticsRequest) ([]models.PeriodStats, error) {
@@ -169,7 +195,7 @@ func TestGetStatistics_Handler_CurrencyIsRUB(t *testing.T) {
 		}, nil
 	}
 
-	analyzerService := service.NewAnalyzerService(mockStorage, logger)
+	analyzerService := service.NewAnalyzerService(mockStorage, logger, cfg)
 	handler := NewAnalyzerHandler(analyzerService, logger)
 
 	req := &pb.GetStatisticsRequest{
@@ -204,6 +230,7 @@ func TestGetStatistics_Handler_CurrencyIsRUB(t *testing.T) {
 
 func TestGetForecast_Handler_Success(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	cfg := getDefaultTestConfig()
 
 	mockStorage := storage.NewMockStorage()
 	mockStorage.GetTransactionsForForecastFunc = func(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.PeriodStats, error) {
@@ -214,7 +241,7 @@ func TestGetForecast_Handler_Success(t *testing.T) {
 		}, nil
 	}
 
-	analyzerService := service.NewAnalyzerService(mockStorage, logger)
+	analyzerService := service.NewAnalyzerService(mockStorage, logger, cfg)
 	handler := NewAnalyzerHandler(analyzerService, logger)
 
 	req := &pb.GetForecastRequest{
@@ -254,6 +281,7 @@ func TestGetForecast_Handler_Success(t *testing.T) {
 
 func TestGetForecast_Handler_QuarterlyPeriod(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	cfg := getDefaultTestConfig()
 
 	mockStorage := storage.NewMockStorage()
 	mockStorage.GetTransactionsForForecastFunc = func(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.PeriodStats, error) {
@@ -266,7 +294,7 @@ func TestGetForecast_Handler_QuarterlyPeriod(t *testing.T) {
 		}, nil
 	}
 
-	analyzerService := service.NewAnalyzerService(mockStorage, logger)
+	analyzerService := service.NewAnalyzerService(mockStorage, logger, cfg)
 	handler := NewAnalyzerHandler(analyzerService, logger)
 
 	req := &pb.GetForecastRequest{
@@ -288,6 +316,7 @@ func TestGetForecast_Handler_QuarterlyPeriod(t *testing.T) {
 
 func TestGetForecast_Handler_YearlyPeriod(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	cfg := getDefaultTestConfig()
 
 	mockStorage := storage.NewMockStorage()
 	mockStorage.GetTransactionsForForecastFunc = func(ctx context.Context, userID string, startDate time.Time, periods int, groupBy models.TimePeriod) ([]models.PeriodStats, error) {
@@ -300,7 +329,7 @@ func TestGetForecast_Handler_YearlyPeriod(t *testing.T) {
 		}, nil
 	}
 
-	analyzerService := service.NewAnalyzerService(mockStorage, logger)
+	analyzerService := service.NewAnalyzerService(mockStorage, logger, cfg)
 	handler := NewAnalyzerHandler(analyzerService, logger)
 
 	req := &pb.GetForecastRequest{
